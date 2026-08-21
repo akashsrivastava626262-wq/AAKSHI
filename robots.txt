@@ -1,0 +1,8 @@
+User-Agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /checkout/
+Disallow: /account/
+
+Sitemap: https://aakshi-jewellery.surge.sh/sitemap.xml
