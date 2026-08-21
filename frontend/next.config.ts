@@ -4,6 +4,12 @@ const isGithubPages = process.env.GITHUB_PAGES === 'true';
 const isStaticExport = process.env.STATIC_EXPORT === 'true' || isGithubPages;
 
 const nextConfig: NextConfig = {
+  allowedDevOrigins: [
+    '*.trycloudflare.com',
+    '*.loca.lt',
+    'muscles-initiated-interracial-communication.trycloudflare.com',
+    'flat-worlds-pay.loca.lt',
+  ],
   ...(isStaticExport
     ? {
         output: 'export' as const,
