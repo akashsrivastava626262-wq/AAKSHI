@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { SlidersHorizontal } from 'lucide-react';
 import ProductCard from '@/components/product/ProductCard';
 import { productApi } from '@/lib/api';
+import { getSampleProducts } from '@/lib/sampleData';
 import type { Product, Category } from '@/types';
 
 function ShopContent() {
@@ -25,7 +26,14 @@ function ShopContent() {
   });
 
   useEffect(() => {
-    productApi.getCategories().then(({ data }) => setCategories(data.data)).catch(() => {});
+    productApi.getCategories().then(({ data }) => setCategories(data.data)).catch(() => {
+      setCategories([
+        { id: '1', name: 'Earrings', slug: 'earrings', _count: { products: 2 } },
+        { id: '2', name: 'Necklaces', slug: 'necklaces', _count: { products: 3 } },
+        { id: '3', name: 'Korean Jewellery', slug: 'korean-jewellery', _count: { products: 3 } },
+        { id: '4', name: 'Anti-Tarnish', slug: 'anti-tarnish', _count: { products: 2 } },
+      ]);
+    });
   }, []);
 
   useEffect(() => {
@@ -41,7 +49,18 @@ function ShopContent() {
 
     productApi.getAll(params)
       .then(({ data }) => setProducts(data.data))
-      .catch(() => setProducts([]))
+      .catch(() => {
+        let products = getSampleProducts({
+          bestSeller: filters.bestSeller || undefined,
+          newArrival: filters.newArrival || undefined,
+          category: filters.category || undefined,
+        });
+        if (filters.search) {
+          const q = filters.search.toLowerCase();
+          products = products.filter(p => p.name.toLowerCase().includes(q) || p.tags.some(t => t.includes(q)));
+        }
+        setProducts(products);
+      })
       .finally(() => setLoading(false));
   }, [filters]);
 

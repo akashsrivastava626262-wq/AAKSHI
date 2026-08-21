@@ -1,13 +1,19 @@
 import type { NextConfig } from 'next';
 
 const isGithubPages = process.env.GITHUB_PAGES === 'true';
+const isStaticExport = process.env.STATIC_EXPORT === 'true' || isGithubPages;
 
 const nextConfig: NextConfig = {
-  ...(isGithubPages
-    ? { output: 'export', basePath: '/AAKSHI', trailingSlash: true, assetPrefix: '/AAKSHI/' }
-    : { output: 'standalone' }),
+  ...(isStaticExport
+    ? {
+        output: 'export' as const,
+        ...(isGithubPages
+          ? { basePath: '/AAKSHI', trailingSlash: true, assetPrefix: '/AAKSHI/' }
+          : { trailingSlash: true }),
+      }
+    : { output: 'standalone' as const }),
   images: {
-    unoptimized: isGithubPages,
+    unoptimized: isStaticExport,
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com' },
       { protocol: 'https', hostname: '*.cloudinary.com' },
@@ -19,7 +25,7 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || 'https://aakshi.com',
   },
   async headers() {
-    if (isGithubPages) return [];
+    if (isStaticExport) return [];
     return [
       {
         source: '/(.*)',

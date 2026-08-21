@@ -4,6 +4,7 @@ import { useEffect, useState, Suspense } from 'react';
 import { useParams } from 'next/navigation';
 import ProductCard from '@/components/product/ProductCard';
 import { productApi } from '@/lib/api';
+import { getSampleProducts } from '@/lib/sampleData';
 import type { Product } from '@/types';
 
 function CollectionContent() {
@@ -23,7 +24,7 @@ function CollectionContent() {
   useEffect(() => {
     productApi.getAll({ category: slug as string, limit: 24 })
       .then(({ data }) => setProducts(data.data))
-      .catch(() => {})
+      .catch(() => setProducts(getSampleProducts({ category: slug as string })))
       .finally(() => setLoading(false));
   }, [slug]);
 

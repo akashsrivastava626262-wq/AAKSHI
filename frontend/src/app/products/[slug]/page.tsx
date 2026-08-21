@@ -12,6 +12,7 @@ import Button from '@/components/ui/Button';
 import ProductCard from '@/components/product/ProductCard';
 import { productApi, cartApi } from '@/lib/api';
 import { formatPrice, calculateDiscount } from '@/lib/utils';
+import { getSampleProductBySlug, getSampleProducts } from '@/lib/sampleData';
 import type { Product } from '@/types';
 import type { RootState } from '@/store';
 
@@ -33,7 +34,15 @@ function ProductDetailContent() {
         return productApi.getRecommendations(data.data.id);
       })
       .then(({ data }) => setRecommendations(data.data))
-      .catch(() => toast.error('Product not found'))
+      .catch(() => {
+        const sample = getSampleProductBySlug(slug as string);
+        if (sample) {
+          setProduct(sample);
+          setRecommendations(getSampleProducts().filter(p => p.slug !== slug).slice(0, 4));
+        } else {
+          toast.error('Product not found');
+        }
+      })
       .finally(() => setLoading(false));
   }, [slug]);
 
